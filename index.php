@@ -1,10 +1,19 @@
 <?php 
- $date = date('Y-m-d H:i');
+ $textFile = 'state.JSON';
+ $writeOK = 'WRITE_OK';
+
+ 
+ include('button.php');
+
+// Open textfile
+$fp = fopen($textFile, 'r');
+$arrayText = fread($fp, 4096);
+fclose($fp);
+$stateObj = json_decode($arrayText, true);
+
  ?>
 <html lang="en">
   <head>
-    <meta name="generator"
-    content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,7 +23,8 @@
     <title>Sprinter Control Panel</title>
     <!-- Bootstrap -->
     <link href="css/darkly-bootstrap.min.css" rel="stylesheet" />
-    <script src="toggle.js"></script>
+    <script src="button.js"></script>
+	
   </head>
   <body>
     <header>
@@ -29,11 +39,9 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li>
-                <p class="navbar-text">
-                  <b>
-                    <?=$date;?>
-                    </b>
-                </p>
+                <b><p id="dateTimeSpot" class="navbar-text">
+                  
+                </p></b>
               </li>
             </ul>
           </div>
@@ -49,30 +57,16 @@
             </div>
             <ul class="list-group">
               <li class="list-group-item">
-                <div class='row'>
-                  <div class="col-xs-6">
-                    <button type="button" id="All_Light_On" onclick="toggleAllLightsOn()"
-                    class="btn btn-block btn-lg btn-warning">On</button>
-                  </div>
-                  <div class="col-xs-6">
-                    <button type="button" id="All_Light_Off" onclick="toggleAllLightsOff()"
-                    class="btn btn-block btn-lg btn-warning">Off</button>
-                  </div>
-                </div>
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Light_LED" onclick="toggleSwitch(this)" class="btn btn-lg btn-block btn-default">LED
-                Strip</button>
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Light_Front" onclick="toggleSwitch(this)" class="btn btn-lg btn-block btn-default">Front
-                Light</button>
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Light_Side" onclick="toggleSwitch(this)" class="btn btn-lg btn-block btn-default">Side
-                Light</button>
-              </li>
-            </ul>
+                <div class='row'>	
+<?php 				
+allButton('LIGHT_ALL_ON', $stateObj["_DESC"]['LIGHT_ALL_ON'], false);
+allButton('LIGHT_ALL_OFF', $stateObj["_DESC"]['LIGHT_ALL_OFF'], false);
+?>				</div>
+              </li>	  
+<?php 			
+foreach($stateObj["LIGHT"] as $thisTag => $tagVal){
+	mainButton($thisTag, $stateObj["_DESC"][ $thisTag ]);
+}?>            </ul>
           </div>
         </div>
         <div class='col-sm-4'>
@@ -83,31 +77,18 @@
             <ul class="list-group">
               <li class="list-group-item">
                  <div class='row'>
-                  <div class="col-xs-6">
-                    <button type="button" id="All_Power_On" onclick="toggleAllPowerOn()"
-                    class="btn btn-block btn-lg btn-default" disabled="disabled">On</button>
-                  </div>
-                  <div class="col-xs-6">
-                    <button type="button" id="All_Power_Off" onclick="toggleAllPowerOff()"
-                    class="btn btn-block btn-lg btn-warning">Off</button>
-                  </div>
-                </div>
+					<div class="col-xs-6">
+					</div>
+<?php
+allButton('POWER_ALL_OFF', $stateObj["_DESC"]['POWER_ALL_OFF'], false);
+?>                </div>
+              </li>
+<?php 
 				
-				
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Pwr_Fridge" onclick="toggleSwitch(this)"
-                class="btn btn-lg btn-block btn-default">Fridge</button>
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Pwr_Cooker" onclick="toggleSwitch(this)"
-                class="btn btn-lg btn-block btn-default">Cooker</button>
-              </li>
-              <li class="list-group-item">
-                <button type="button" id="Pwr_Coffee" onclick="toggleSwitch(this)" class="btn btn-lg btn-block btn-default">Coffee
-                Machine</button>
-              </li>
-            </ul>
+foreach($stateObj["POWER"] as $thisTag => $tagVal){
+	mainButton($thisTag, $stateObj["_DESC"][ $thisTag ]);
+	
+}?>            </ul>
           </div>
         </div>
         <div class='col-sm-4'>
@@ -117,18 +98,14 @@
             </div>
             <table class='table'>
               <tbody>
-                <tr>
-                  <th>Inverter</th>
-                  <th><span class="label label-primary">On</span></th>
-                </tr>
-                <tr>
-                  <th>Heating</th>
-                  <th><span class="label label-default">Off</span></th>
-                </tr>
-                <tr>
-                  <th>Ignition</th>
-                  <th><span class="label label-primary">On</span></th>
-                </tr>
+
+	<?php 			
+	
+	foreach($stateObj["STATUS"] as $thisTag => $tagVal){
+		statusRow($thisTag, $stateObj["_DESC"][ $thisTag ], $tagVal);
+		
+	}?>			    
+		  
               </tbody>
             </table>
           </div>
@@ -139,22 +116,14 @@
             </div>
             <table class='table'>
               <tbody>
-                <tr>
-                  <th>Internal</th>
-                  <th>12 deg C</th>
-                </tr>
-                <tr>
-                  <th>External</th>
-                  <th>24 deg C</th>
-                </tr>
-                <tr>
-                  <th>Fridge</th>
-                  <th>0.4 deg C</th>
-                </tr>
-                <tr>
-                  <th>Water</th>
-                  <th>0.4 deg C</th>
-                </tr>
+			  
+	<?php 			
+	
+	foreach($stateObj["TEMP"] as $thisTag => $tagVal){
+		tempRow($thisTag, $stateObj["_DESC"][ $thisTag ], $tagVal);
+		
+	}?>						  
+
               </tbody>
             </table>
           </div>
@@ -163,6 +132,10 @@
 		  
         </div>
       </div>
-    </div>
+	  <div id="responseWindow" class="alert alert-dismissable alert-info fade in" hidden="hidden">
+		Message
+	  </div>
+	  
+	</div>
   </body>
 </html>
