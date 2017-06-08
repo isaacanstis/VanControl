@@ -2,7 +2,7 @@
 Van 230 / 24v Control, remote temp logging, WebUI, and whatever else i can think of
 
 ## Latest Functional Notes:
-_Bootstrap UI, buttons function as expected, state stored on server, works with multiple clients connected, functional on phone, PC, and RPi Touchscreen._
+**Bootstrap UI, buttons function as expected, state stored on server, works with multiple clients connected, functional on phone, PC, and RPi Touchscreen.**
 
 * State stored on server as state.JSON text file. 
 * index.php populates buttons on load according to the current state.JSON file
@@ -11,11 +11,11 @@ _Bootstrap UI, buttons function as expected, state stored on server, works with 
 * button.php has the "templates" for creating the button HTML
 * data.PHP opens file, handles the update from client if required (?X=..), sends updated JSON string to client, overwrites file
 * button.js reads JSON on load / every second, updates all buttons to current state, primes for change.
-** On button press - requests from data.php along with button input.
-** Parses JSON response - refreshes all button html
-** Alert box states change, "fades in/out" using non-jQuery code
+  * On button press - requests from data.php along with button input.
+  * Parses JSON response - refreshes all button html
+  * Alert box states change, "fades in/out" using non-jQuery code
 
-## Todo - to make work
+### Todo - to make work
 * Update temperatures / Status
 * Python read state file
 * Ardunio / RPi read 1-wire temp sensors
@@ -25,7 +25,7 @@ _Bootstrap UI, buttons function as expected, state stored on server, works with 
 * Wire current sensors
 
 
-## Todo - nice to have
+### Todo - nice to have
 * Node.JS or a more efficient state change checker? (something to push client refresh if another client updates)
 * State stored in DB? Not sure if faster
 * Temp history graph
